@@ -9,12 +9,12 @@ module.exports.profile = async (req, res) => {
             age: req.body.age,
             phone: req.body.phone,
             Aboutme: req.body.Aboutme,
-            qualifications: req.body.qualifications,
+            qualification: req.body.qualification,
             job: req.body.job,
             company: req.body.company,
             worksample: req.body.worksample,
             user: req.userId,
-            images: req.body.images
+            image: req.body.image
         });
         const result = await data.save();
         res.status(200).json(result);
@@ -76,7 +76,7 @@ module.exports.work = async (req, res) => {
 module.exports.getprofile = async (req, res) => {
     try {
         const pro = await Profile.findById({ _id: req.params.id })
-           .populate("qualifications job worksample user images");
+           .populate("qualification job worksample user image");
         res.status(200).json(pro);
 
     } catch (error) {

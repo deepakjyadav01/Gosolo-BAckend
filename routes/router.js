@@ -28,7 +28,8 @@ router.delete("/auth/RemoveUser" , [auth.verifyToken], ctrlUser.RemoveUser);
 
 //api/ image uploads 
 router.post("/auth/upload", [auth.verifyToken], upload.single('file') , ctrlUpload.uploadFile );
-router.post("/auth/getImage",[auth.verifyToken] ,ctrlUpload.getImagesById);
+router.get("/auth/getImage/:id",ctrlUpload.getImagesById);
+router.get("/auth/image/:filename",[auth.verifyToken] ,ctrlUpload.getimage);
 router.delete("/auth/deleteImage",[auth.verifyToken] ,ctrlUpload.DeleteImage);
 
 //api profile 

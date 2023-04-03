@@ -4,7 +4,6 @@ const User = require('../models/user.model');
 
 const ImageSchema = new Schema({
     filename: {
-        required: true,
         type: String
     },
     caption: {
@@ -12,7 +11,6 @@ const ImageSchema = new Schema({
     },
     category: {
         type: String,
-        required:true
     },
     fileId:{
         type: mongoose.Schema.Types.ObjectId,

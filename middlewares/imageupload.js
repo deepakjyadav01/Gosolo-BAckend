@@ -13,7 +13,7 @@ const storage = new GridFsStorage({
        if (file.mimetype === 'image/jpeg' || 'image/png') {
         return data = new Promise((resolve, reject) => {
           const fileInfo = {
-            filename: req.body.filename + Date.now(),
+            filename : file.originalname + Date.now(),
             bucketName: 'uploads',
           };
           resolve(fileInfo);

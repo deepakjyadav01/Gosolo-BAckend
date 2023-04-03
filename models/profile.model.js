@@ -8,14 +8,14 @@ const ProfileSchema = new Schema({
         required: true,
         type: String,
     },
-    age: {
-        required: true,
-        type: Number
+    gender: {
+        type: String
+    },
+    DOB: {
+        type: Date
     },
     phone: {
         type: String,
-        required: true,
-        unique: true,
         validate(value) {
             if (!validator.isMobilePhone(value)) {
                 throw new Error("Phone number is invalid");
@@ -25,7 +25,7 @@ const ProfileSchema = new Schema({
     Aboutme: {
         type: String,
     },
-    qualifications: [{
+    qualification: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: bd.qualification
     }],
@@ -45,10 +45,10 @@ const ProfileSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    images: [{
+    image: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Image"
-    }],
+    },
 });
 
 const Profile = mongoose.model('Profile', ProfileSchema);

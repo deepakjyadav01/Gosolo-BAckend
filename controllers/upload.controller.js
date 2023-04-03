@@ -20,12 +20,13 @@ db
 module.exports.uploadFile = async (req, res) => {
     try {
         let data = new Image({
-            filename: req.file.filename,
+            filename: req.file.originalname + Date.now(),
             caption: req.body.caption,
             category: req.body.category,
             userId: req.userId,
             fileId: req.file.id,
         })
+
         const files = req.file;
         const image = await data.save();
         res.status(200).json({
@@ -42,11 +43,10 @@ module.exports.uploadFile = async (req, res) => {
 
 module.exports.getImagesById = async (req, res) => {
     try {
-
-        const images = await Image.find({ _id: { $in: req.body.id } }).populate({ path: 'userId', select: 'username' });
+        const images = await Image.find({ _id: req.params.id });
         const Ids = images.map(img => img.fileId);
 
-        gfs.find({ _id: { $in: Ids } }).toArray((err, files) => {
+        const file = await gfs.find({ _id: { $in: Ids } }).toArray((err, files) => {
             if (!files || files.length === 0) {
                 return res.status(200).json({
                     success: false,
@@ -60,21 +60,30 @@ module.exports.getImagesById = async (req, res) => {
                     file.isImage = false;
                 }
             });
-            // render image to browser
-            //gfs.openDownloadStreamByName(req.params.filename).pipe(res);
-            res.status(200).json({
-                success: true,
-                images,
-                files
-            });
+            //render image to browser
         });
+        // res.status(200).json({
+        //     success: true,
+        //     images,
+        //     file,
+
+        // });
+
+        gfs.openDownloadStreamByName(file[0].filename).pipe(res)
     } catch (error) {
-        console.log(error);
         res.status(400).send(`Error when trying upload image: ${error}`);
     }
 };
 
-
+module.exports.getimage = async (req, res) => {
+    try{
+        
+        gfs.openDownloadStreamByName({filename: req.params.filename}).pipe(res);
+        console.log(file)
+    }catch(error){
+        console.log(error)
+    }
+}
 module.exports.DeleteImage = async (req, res) => {
     try {
 
