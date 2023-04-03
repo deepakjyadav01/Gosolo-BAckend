@@ -6,7 +6,8 @@ module.exports.profile = async (req, res) => {
     try {
         let data = new Profile({
             fullname: req.body.fullname,
-            age: req.body.age,
+            gender: req.body.gender,
+            DOB: req.body.DOB,
             phone: req.body.phone,
             Aboutme: req.body.Aboutme,
             qualification: req.body.qualification,
