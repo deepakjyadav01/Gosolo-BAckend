@@ -12,6 +12,7 @@ module.exports.posts = async (req, res) => {
             role: req.body.role,
             company: req.body.company,
             currency: req.body.currency,
+            location: req.body.location,
             Provider: req.userId,
         });
         const result = await data.save();
@@ -54,7 +55,7 @@ module.exports.getposts = async (req, res) => {
     try {
         const data = await Activity.find()
             .select('_id title category price currency company Provider')
-            .populate({ path: 'Provider', select: 'username' })
+            .populate({ path: 'Provider', select: 'email' })
             .sort({ "createdAt": 1 })
         res.status(200).json(data);
         // { title: { $regex: req.params.title, $options: 'xsi' } }
@@ -69,8 +70,22 @@ module.exports.getpostById = async (req, res) => {
     try {
         const data = await Activity.findById({ _id: req.params.id })
         .populate("Selected bidders")
-        .populate({path:'Provider' , select:'username'})
+        .populate({path:'Provider' , select:'fullname'})
         res.status(200).json(data);
+
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error);
+
+    }
+}
+module.exports.getpostbyproviderId = async (req, res) => {
+    try {
+        const data = await Activity.find({ Provider: req.params.id })
+        .select(' title category price currency Provider location')
+        .populate({path:'Provider' , select:'fullname'})
+        .sort({ "createdAt": 1 })
+    res.status(200).json(data);
 
     } catch (error) {
         console.log(error)

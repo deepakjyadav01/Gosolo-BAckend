@@ -19,19 +19,18 @@ db
 
 module.exports.uploadFile = async (req, res) => {
     try {
-        let data = new Image({
-            filename: req.file.originalname + Date.now(),
-            caption: req.body.caption,
-            category: req.body.category,
-            userId: req.userId,
-            fileId: req.file.id,
-        })
+        // let data = new Image({
+        //     filename: req.file.originalname + Date.now(),
+        //     caption: req.body.caption,
+        //     category: req.body.category,
+        //     userId: req.userId,
+        //     fileId: req.file.id,
+        // })
 
         const files = req.file;
-        const image = await data.save();
+        // const image = await data.save();
         res.status(200).json({
             success: true,
-            image,
             files
         });
     } catch (error) {
@@ -43,10 +42,10 @@ module.exports.uploadFile = async (req, res) => {
 
 module.exports.getImagesById = async (req, res) => {
     try {
-        const images = await Image.find({ _id: req.params.id });
-        const Ids = images.map(img => img.fileId);
+        // const images = await Image.find({ _id: req.params.id });
+        // const Ids = images.map(img => img.fileId);
 
-        const file = await gfs.find({ _id: { $in: Ids } }).toArray((err, files) => {
+        const file = await gfs.find({ filename: req.params.name }).toArray((err, files) => {
             if (!files || files.length === 0) {
                 return res.status(200).json({
                     success: false,
@@ -64,23 +63,25 @@ module.exports.getImagesById = async (req, res) => {
         });
         // res.status(200).json({
         //     success: true,
-        //     images,
         //     file,
 
         // });
-
-        gfs.openDownloadStreamByName(file[0].filename).pipe(res)
+        const readstream = gfs.openDownloadStreamByName(req.params.name);
+       // console.log(file.contentType)
+    //    res.set('Content-Type', file.contentType);
+        return readstream.pipe(res);
+        //gfs.openDownloadStreamByName(req.params.name).pipe(res)
     } catch (error) {
         res.status(400).send(`Error when trying upload image: ${error}`);
     }
 };
 
 module.exports.getimage = async (req, res) => {
-    try{
-        
-        gfs.openDownloadStreamByName({filename: req.params.filename}).pipe(res);
+    try {
+
+        gfs.openDownloadStreamByName({ filename: req.params.filename }).pipe(res);
         console.log(file)
-    }catch(error){
+    } catch (error) {
         console.log(error)
     }
 }

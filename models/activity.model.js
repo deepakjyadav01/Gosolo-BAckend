@@ -18,6 +18,9 @@ const ActivitySchema = new Schema({
     currency:{
         type:String,
     },
+    location:{
+        type:String,
+    },
     Paystatus:{
         type:String,
         lowercase:true,

@@ -28,7 +28,7 @@ router.delete("/auth/RemoveUser" , [auth.verifyToken], ctrlUser.RemoveUser);
 
 //api/ image uploads 
 router.post("/auth/upload", [auth.verifyToken], upload.single('file') , ctrlUpload.uploadFile );
-router.get("/auth/getImage/:id",ctrlUpload.getImagesById);
+router.get("/auth/getImage/:name",ctrlUpload.getImagesById);
 router.get("/auth/image/:filename",[auth.verifyToken] ,ctrlUpload.getimage);
 router.delete("/auth/deleteImage",[auth.verifyToken] ,ctrlUpload.DeleteImage);
 
@@ -50,6 +50,7 @@ router.put("/auth/updateProfile/:id",[auth.verifyToken], ctrlProfile.updateProfi
 router.post("/auth/AddPost",[auth.verifyToken], ctrlActivity.posts);
 router.get("/auth/getposts",[auth.verifyToken], ctrlActivity.getposts);
 router.get("/auth/getpostBy/:id",[auth.verifyToken], ctrlActivity.getpostById);
+router.get("/auth/postbyproviderID/:id",[auth.verifyToken], ctrlActivity.getpostbyproviderId);
 router.patch("/auth/Addbidder/:id",[auth.verifyToken], ctrlActivity.addbidder);
 router.put("/auth/UpdatePost/:id",[auth.verifyToken], ctrlActivity.Updatepost);
 router.patch("/auth/Selectbidder/:id",[auth.verifyToken], ctrlActivity.SelectBidder);

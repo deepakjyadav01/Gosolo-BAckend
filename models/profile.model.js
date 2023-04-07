@@ -46,8 +46,7 @@ const ProfileSchema = new Schema({
         ref: "User"
     },
     image: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Image"
+        type:String
     },
 });
 

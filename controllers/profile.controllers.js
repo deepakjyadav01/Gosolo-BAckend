@@ -77,7 +77,7 @@ module.exports.work = async (req, res) => {
 module.exports.getprofile = async (req, res) => {
     try {
         const pro = await Profile.findById({ _id: req.params.id })
-           .populate("qualification job worksample user image");
+           .populate("qualification job worksample user");
         res.status(200).json(pro);
 
     } catch (error) {
@@ -190,7 +190,6 @@ module.exports.updateProfile = async (req, res) => {
         const phone = req.body.phone;
         const Aboutme = req.body.Aboutme;
         const company = req.body.company;
-        const images = req.body.images;
 
         const data = await Profile.findByIdAndUpdate({ _id: req.params.id },
             {
@@ -200,7 +199,6 @@ module.exports.updateProfile = async (req, res) => {
                     phone: phone,
                     Aboutme: Aboutme,
                     company:company,
-                    images:images
                 }
             }, { new: true });
         if (data) {

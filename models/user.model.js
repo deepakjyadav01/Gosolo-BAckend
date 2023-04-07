@@ -33,8 +33,12 @@ const UserSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Role"
   }],
-  profileID:{
-    type:String,
+  profileID: {
+    type: String,
+    default: null
+  },
+  fullname: {
+    type: String,
     default: null
   }
 });

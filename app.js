@@ -9,13 +9,13 @@ var cookieParser = require('cookie-parser')
 var WebSockets = require('./middlewares/WebSocket');
 var app = express();
 
-// const cors = require('cors');
+const cors = require('cors');
 app.use(cookieParser())
 app.use(express.text());
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
-// app.use(cors({origin: true, credentials: true}));
+ app.use(cors({origin: true, credentials: true}));
 app.use(function (req, response, next) {
 
     response.setHeader("Access-Control-Allow-Origin", "*");
