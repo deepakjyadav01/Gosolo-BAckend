@@ -29,8 +29,8 @@ router.delete("/auth/RemoveUser" , [auth.verifyToken], ctrlUser.RemoveUser);
 //api/ image uploads 
 router.post("/auth/upload", [auth.verifyToken], upload.single('file') , ctrlUpload.uploadFile );
 router.get("/auth/getImage/:name",ctrlUpload.getImagesById);
-router.get("/auth/image/:filename",[auth.verifyToken] ,ctrlUpload.getimage);
-router.delete("/auth/deleteImage",[auth.verifyToken] ,ctrlUpload.DeleteImage);
+router.get("/auth/image/:filename",ctrlUpload.getimagebyID);
+router.delete("/auth/deleteImage/:id",[auth.verifyToken] ,ctrlUpload.DeleteImage);
 
 //api profile 
 router.post("/auth/addqualifications",[auth.verifyToken], ctrlProfile.qualifications);
@@ -51,10 +51,15 @@ router.post("/auth/AddPost",[auth.verifyToken], ctrlActivity.posts);
 router.get("/auth/getposts",[auth.verifyToken], ctrlActivity.getposts);
 router.get("/auth/getpostBy/:id",[auth.verifyToken], ctrlActivity.getpostById);
 router.get("/auth/postbyproviderID/:id",[auth.verifyToken], ctrlActivity.getpostbyproviderId);
+router.get("/auth/postbyselectedID/:id",[auth.verifyToken], ctrlActivity.postbyselectedID);
 router.patch("/auth/Addbidder/:id",[auth.verifyToken], ctrlActivity.addbidder);
-router.put("/auth/UpdatePost/:id",[auth.verifyToken], ctrlActivity.Updatepost);
 router.patch("/auth/Selectbidder/:id",[auth.verifyToken], ctrlActivity.SelectBidder);
-router.patch("/auth/Confirmbidder/:id",[auth.verifyToken], ctrlActivity.ConfirmBidder);
+router.put("/auth/UpdatePost/:id",[auth.verifyToken], ctrlActivity.Updatepost);
+router.patch("/auth/updatefile/:id",[auth.verifyToken], ctrlActivity.updatefile);
+router.patch("/auth/updateWS/:id",[auth.verifyToken], ctrlActivity.updateWS);
+router.patch("/auth/Reviewwork/:id",[auth.verifyToken], ctrlActivity.review);
+router.patch("/auth/resubmit/:id", ctrlActivity.resubmit);
+router.patch("/auth/confirm/:id", ctrlActivity.confirm);
 router.patch("/auth/updatePay/:id",[auth.verifyToken], ctrlActivity.updatepaystatus);
 router.patch("/auth/Removebidder/:id",[auth.verifyToken], ctrlActivity.removebidder);
 router.delete("/auth/deletePostBy/:id",[auth.verifyToken], ctrlActivity.DeletePost);

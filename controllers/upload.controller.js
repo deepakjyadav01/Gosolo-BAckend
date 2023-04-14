@@ -67,8 +67,8 @@ module.exports.getImagesById = async (req, res) => {
 
         // });
         const readstream = gfs.openDownloadStreamByName(req.params.name);
-       // console.log(file.contentType)
-    //    res.set('Content-Type', file.contentType);
+        // console.log(file.contentType)
+        //    res.set('Content-Type', file.contentType);
         return readstream.pipe(res);
         //gfs.openDownloadStreamByName(req.params.name).pipe(res)
     } catch (error) {
@@ -76,11 +76,26 @@ module.exports.getImagesById = async (req, res) => {
     }
 };
 
-module.exports.getimage = async (req, res) => {
+module.exports.getimagebyID = async (req, res) => {
     try {
-
-        gfs.openDownloadStreamByName({ filename: req.params.filename }).pipe(res);
-        console.log(file)
+        const file = await gfs.find({ filename: req.params.filename }).toArray((err, files) => {
+            if (!files || files.length === 0) {
+                return res.status(200).json({
+                    success: false,
+                    message: 'No files available'
+                });
+            }
+            files.map(file => {
+                if (file.contentType === 'image/jpeg' || file.contentType === 'image/png' || file.contentType === 'image/svg') {
+                    file.isImage = true;
+                } else {
+                    file.isImage = false;
+                }
+            });
+        });
+        if (file) {
+            res.status(200).json(file[0]);
+        }
     } catch (error) {
         console.log(error)
     }
@@ -88,20 +103,12 @@ module.exports.getimage = async (req, res) => {
 module.exports.DeleteImage = async (req, res) => {
     try {
 
-        const images = await Image.findByIdAndDelete({ _id: req.body.id });
-        const id = images.fileId;
-        gfs.delete(new mongoose.Types.ObjectId(id), (err, data) => {
-            if (err) {
-                return res.status(404).json({ err: err });
-            }
+        const img = await gfs.delete(new mongoose.Types.ObjectId(req.params.id));
             res.status(200).json({
-                success: true,
-                deleted: true,
-                images,
-                message: `File with ID ${id} is deleted`,
-            });
-        });
+                success:true,
 
+            });
+    
     } catch (error) {
         console.log(error)
         res.status(400).json({ error });

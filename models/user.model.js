@@ -40,6 +40,10 @@ const UserSchema = new mongoose.Schema({
   fullname: {
     type: String,
     default: null
+  },
+  image: {
+    type: String,
+    default: null
   }
 });
 

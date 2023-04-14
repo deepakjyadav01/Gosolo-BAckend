@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const User = require('../models/user.model');
+const bd = require('../models/biodata.model');
+
 
 const ActivitySchema = new Schema({
     title: {
@@ -48,11 +50,20 @@ const ActivitySchema = new Schema({
     confirm:{
         type:String,
         lowercase:true,
-        enum:['yes','no'],
-        default:'no'
+        enum:['yes','no',null],
+        default:null
     },
     role: {
         type: String
+    },
+    worksample: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: bd.worksample   ,
+        default:null   
+    },
+    file:{
+        type:String,
+        default:null
     },
     createdAt: {
         default: Date.now(),

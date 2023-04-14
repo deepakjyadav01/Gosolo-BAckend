@@ -88,7 +88,8 @@ module.exports.login = async (req, res) => {
                 accessToken: token,
                 RefreshToken: refreshToken,
                 profileID: user.profileID,
-                fullname: user.fullname
+                fullname: user.fullname,
+                image: user.image                
             })
 
             res.status(200).json(data);
@@ -185,7 +186,8 @@ module.exports.addprofileID = async (req, res) => {
         const user = await User.findByIdAndUpdate({ _id: req.userId }, {
             $set: {
                 profileID: profileID,
-                fullname: req.body.fullname
+                fullname: req.body.fullname,
+                image: req.body.image
             }
         }, { new: true })
 

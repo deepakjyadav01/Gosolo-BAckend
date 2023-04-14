@@ -29,7 +29,7 @@ chatRoomSchema.statics.initiateChat = async function (userIds, type, chatInitiat
                 $all: [...userIds],
             },
             type,
-        });
+        }).populate("userIds");
         if (availableRoom) {
             return {
                 isNew: false,

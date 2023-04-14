@@ -26,26 +26,26 @@ module.exports.addbidder = async (req, res) => {
     try {
         const find = await Activity.findById({ _id: req.params.id })
         const arr = find.bidders;
-        
-        if(!arr.includes(req.body.id)){
+
+        if (!arr.includes(req.body.id)) {
             const user = await Activity.findOneAndUpdate({ _id: req.params.id },
                 {
                     $push: {
                         bidders: req.body.id
                     }
-                }, { new: true });
-    
+                }, { new: true }).populate("bidders");;
+
             if (user) {
-                res.status(200).json({ user });
+                res.status(200).json({ user })
             } else {
                 res.status(400).send("couldn't update data, please try again");
             }
-        }else{
+        } else {
             res.status(400).json({
                 data: `${req.body.id} has already applied`
             })
         }
-        
+
     } catch (error) {
         res.status(400).send(`Error when trying upload image: ${error}`);
     }
@@ -54,8 +54,8 @@ module.exports.addbidder = async (req, res) => {
 module.exports.getposts = async (req, res) => {
     try {
         const data = await Activity.find()
-            .select('_id title category price currency company Provider')
-            .populate({ path: 'Provider', select: 'email' })
+            .select('_id title category price currency location Provider')
+            .populate({ path: 'Provider', select: 'fullname' })
             .sort({ "createdAt": 1 })
         res.status(200).json(data);
         // { title: { $regex: req.params.title, $options: 'xsi' } }
@@ -69,8 +69,10 @@ module.exports.getposts = async (req, res) => {
 module.exports.getpostById = async (req, res) => {
     try {
         const data = await Activity.findById({ _id: req.params.id })
-        .populate("Selected bidders")
-        .populate({path:'Provider' , select:'fullname'})
+            .populate({ path: 'bidders', select: 'image fullname profileID' })
+            .populate({ path: 'Selected', select: 'image fullname ' })
+            .populate({ path: 'Provider', select: 'email fullname ' })
+            .populate("worksample")
         res.status(200).json(data);
 
     } catch (error) {
@@ -79,13 +81,27 @@ module.exports.getpostById = async (req, res) => {
 
     }
 }
+
 module.exports.getpostbyproviderId = async (req, res) => {
     try {
         const data = await Activity.find({ Provider: req.params.id })
-        .select(' title category price currency Provider location')
-        .populate({path:'Provider' , select:'fullname'})
-        .sort({ "createdAt": 1 })
-    res.status(200).json(data);
+            .select(' title category price currency Provider location')
+            .populate("Provider bidders")
+            .sort({ "createdAt": 1 })
+        res.status(200).json(data);
+
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error);
+
+    }
+}
+module.exports.postbyselectedID = async (req, res) => {
+    try {
+        const data = await Activity.find({ Selected: req.params.id })
+            .select(' title category')
+            .sort({ "createdAt": 1 })
+        res.status(200).json(data);
 
     } catch (error) {
         console.log(error)
@@ -123,12 +139,65 @@ module.exports.Updatepost = async (req, res) => {
     }
 };
 
+module.exports.updatefile = async (req, res) => {
+    try {
+        const data = await Activity.findByIdAndUpdate({ _id: req.params.id },
+            {
+                $set: {
+                    file: req.body.filename
+                }
+            }, { new: true })
+
+        if (data) {
+            res.status(200).json({ data })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error);
+    }
+}
+module.exports.updateWS = async (req, res) => {
+    try {
+        const data = await Activity.findByIdAndUpdate({ _id: req.params.id },
+            {
+                $set: {
+                    worksample: req.body.id
+                }
+            }, { new: true })
+
+        if (data) {
+            res.status(200).json({ data })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error);
+    }
+}
+
 module.exports.SelectBidder = async (req, res) => {
     try {
         const data = await Activity.findByIdAndUpdate({ _id: req.params.id },
             {
                 $set: {
                     Selected: req.body.id
+                }
+            }, { new: true }).select('Selected').populate({ path: 'Selected', select: 'image fullname ' })
+
+        if (data) {
+            res.status(200).json({ data })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error);
+    }
+}
+
+module.exports.review = async (req, res) => {
+    try {
+        const data = await Activity.findByIdAndUpdate({ _id: req.params.id },
+            {
+                $set: {
+                    confirm: req.body.confirm
                 }
             }, { new: true });
 
@@ -140,13 +209,30 @@ module.exports.SelectBidder = async (req, res) => {
         res.status(400).send(error);
     }
 }
-
-module.exports.ConfirmBidder = async (req, res) => {
+module.exports.resubmit = async (req, res) => {
     try {
         const data = await Activity.findByIdAndUpdate({ _id: req.params.id },
             {
                 $set: {
-                    confirm: "yes"
+                    worksample: null,
+                    file: null
+                }
+            }, { new: true });
+
+        if (data) {
+            res.status(200).json({ data })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error);
+    }
+}
+module.exports.confirm = async (req, res) => {
+    try {
+        const data = await Activity.findByIdAndUpdate({ _id: req.params.id },
+            {
+                $set: {
+                    confirm:null
                 }
             }, { new: true });
 

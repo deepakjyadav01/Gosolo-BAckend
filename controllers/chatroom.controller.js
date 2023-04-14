@@ -76,7 +76,7 @@ module.exports.getConversationByRoomId = async (req, res) => {
             page: parseInt(req.query.page) || 0,
             limit: parseInt(req.query.limit) || 10,
         };
-        const conversation = await chatMessage.getConversationByRoomId(roomId, options);
+        const conversation = await chatMessage.getConversationByRoomId(roomId, options,req.UserId);
 
         res.status(200).json({
             success: true,
