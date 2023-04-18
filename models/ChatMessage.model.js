@@ -117,7 +117,7 @@ chatMessageSchema.statics.getConversationByRoomId = async function (chatRoomId, 
         const msgs = await chatMessage.find({ chatRoomId: chatRoomId })
         .select('message postedByUser').populate('message')
         .sort({createdAt: 1} )
-        .limit(10)
+        .limit(50)
         return msgs
         // const agg = this.aggregate([
         //     { $match: { chatRoomId } },
