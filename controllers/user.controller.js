@@ -44,12 +44,7 @@ module.exports.register = async (req, res) => {
 }
 module.exports.getemail = async (req, res) => {
     try {
-        const data = await User.find({ email: req.params.email }).count()
-        if(data >= 1){
-            res.status(200).json("Not Available!");
-        }else if(data===0){
-            res.status(200).json("Available!");
-        }
+       res.status(200).send("Welcome to home page")
     } catch (error) {
         console.log(error)
         res.status(400).send(error);
