@@ -66,12 +66,12 @@ router.delete("/auth/deletePostBy/:id",[auth.verifyToken], ctrlActivity.DeletePo
 
 //api Blog
 router.post("/auth/Createblog", [auth.verifyToken], ctrlBlogs.Createblog);
-router.post("/auth/addbody", [auth.verifyToken], ctrlBlogs.addbody);
 router.post("/auth/addComment" , [auth.verifyToken], ctrlBlogs.addcomment);
-router.get("/auth/getblogs/:title" , [auth.verifyToken], ctrlBlogs.getblogs);
+router.get("/auth/getblogs", ctrlBlogs.getblogs);
 router.get("/auth/getblogBy/:id", [auth.verifyToken], ctrlBlogs.getblogById);
+router.get("/auth/getblogbyUserID/:id", [auth.verifyToken], ctrlBlogs.getblogsbyuserID);
+router.get("/auth/getcommentsbyBlogID/:id", [auth.verifyToken], ctrlBlogs.getcommentsbyBlogID);
 router.put("/auth/updateBlog/:id", [auth.verifyToken],ctrlBlogs.Updateblog);
-router.put("/auth/updateBlogbody/:id", [auth.verifyToken],ctrlBlogs.Updateblogbody);
 router.delete("/auth/deleteBlogBy/:id", [auth.verifyToken], ctrlBlogs.DeleteBlog);
 
 //api Chat 

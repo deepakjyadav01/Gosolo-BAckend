@@ -6,9 +6,9 @@ const makeValidation = require('@withvoid/make-validation');
 
 module.exports.initiate = async (req, res) => {
     try {
-        const { userIds, type } = req.body;
+        const { userIds, type,postID } = req.body;
         const chatInitiator = req.userId;
-        const chatRoom = await ChatRoom.initiateChat(userIds, type, chatInitiator);
+        const chatRoom = await ChatRoom.initiateChat(userIds, type, chatInitiator,postID);
         return res.status(200).json({ success: true, chatRoom });
     } catch (error) {
         return res.status(500).json({ success: false, error: error })

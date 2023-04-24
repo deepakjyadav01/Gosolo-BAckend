@@ -7,6 +7,7 @@ const http = require('http')
 const express = require('express');
 var cookieParser = require('cookie-parser')
 var WebSockets = require('./middlewares/WebSocket');
+// const { Server } = require("socket.io");
 var app = express();
 
 const cors = require('cors');
@@ -15,7 +16,7 @@ app.use(express.text());
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
- app.use(cors({origin: true, credentials: true}));
+app.use(cors({ origin: true, credentials: true }));
 app.use(function (req, response, next) {
 
     response.setHeader("Access-Control-Allow-Origin", "*");
@@ -44,3 +45,25 @@ const server = app.listen(process.env.PORT, () => console.log(`server started at
 const io = require('socket.io')(server);
 global.io = io.listen(server);
 global.io.on('connection', WebSockets.connection)
+
+// const io = new Server(server, {
+//     cors: {
+//         origin: true
+//     },
+// });
+// io.on("connection", (socket) => {
+//     console.log(`User Connected: ${socket.id}`);
+
+//     socket.on("join_room", (data) => {
+//         socket.join(data);
+//         console.log(`User with ID: ${socket.id} joined room: ${data}`);
+//     });
+
+//     socket.on("send_message", (data) => {
+//         socket.to(data.room).emit("receive_message", data);
+//     });
+
+//     socket.on("disconnect", () => {
+//         console.log("User Disconnected", socket.id);
+//     });
+// });

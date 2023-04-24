@@ -12,8 +12,7 @@ const BlogSchema = new Schema({
         ref: "User"
     },
     body: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Blogbody",
+        type: String
     },
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -21,24 +20,6 @@ const BlogSchema = new Schema({
         default:null
     }],
     category: {
-        type: String
-    },
-    images:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Image"
-    }],
-    createdAt: {
-        default: Date.now(),
-        type: Date,
-    },
-})
-
-const BlogbodySchema = new Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-    },
-    body: {
         type: String
     },
     createdAt: {
@@ -49,7 +30,4 @@ const BlogbodySchema = new Schema({
 
 
 const Blog = mongoose.model("Blog", BlogSchema);
-const Blogbody = mongoose.model("Blogbody", BlogbodySchema);
-
-
-module.exports = {Blog,Blogbody};
+module.exports = Blog;

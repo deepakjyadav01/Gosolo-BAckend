@@ -14,6 +14,10 @@ const chatRoomSchema = new Schema({
     }],
     type: String,
     chatInitiator: String,
+    postID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Activity"
+    }
 },
     {
         timestamps: true
@@ -21,7 +25,7 @@ const chatRoomSchema = new Schema({
 );
 
 
-chatRoomSchema.statics.initiateChat = async function (userIds, type, chatInitiator) {
+chatRoomSchema.statics.initiateChat = async function (userIds, type, chatInitiator, postID) {
     try {
         const availableRoom = await this.findOne({
             userIds: {
@@ -29,6 +33,7 @@ chatRoomSchema.statics.initiateChat = async function (userIds, type, chatInitiat
                 $all: [...userIds],
             },
             type,
+            postID: postID
         }).populate("userIds");
         if (availableRoom) {
             return {
@@ -36,16 +41,18 @@ chatRoomSchema.statics.initiateChat = async function (userIds, type, chatInitiat
                 message: 'retrieving an old chat room',
                 chatInitiator: availableRoom.chatInitiator,
                 userIds: availableRoom.userIds,
+                postID: availableRoom.postID,
                 chatRoomId: availableRoom._id,
                 type: availableRoom.type,
             };
         }
 
-        const newRoom = await this.create({ userIds, type, chatInitiator });
+        const newRoom = await this.create({ userIds, type, chatInitiator,postID });
         return {
             isNew: true,
             message: 'creating a new chatroom',
             chatInitiator: newRoom.chatInitiator,
+            postID: newRoom.postID,
             userIds: newRoom.userIds,
             chatRoomId: newRoom._id,
             type: newRoom.type,

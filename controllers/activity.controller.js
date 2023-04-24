@@ -56,7 +56,7 @@ module.exports.getposts = async (req, res) => {
         const data = await Activity.find()
             .select('_id title category price currency location Provider')
             .populate({ path: 'Provider', select: 'fullname' })
-            .sort({ "createdAt": 1 })
+            .sort({ "createdAt": -1 })
         res.status(200).json(data);
         // { title: { $regex: req.params.title, $options: 'xsi' } }
     } catch (error) {
