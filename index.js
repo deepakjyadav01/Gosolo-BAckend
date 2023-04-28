@@ -63,7 +63,7 @@ const io = new Server(server, {
     });
   
     socket.on("disconnect", () => {
-      console.log("User Disconnected", socket.id);
+      console.log("User Disconnected", socket.id)
     });
   });
 
