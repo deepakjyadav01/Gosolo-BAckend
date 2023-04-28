@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const Activity = require('../models/activity.model')
+const Order = require('../models/payment.moder')
 const bd = require('../models/biodata.model');
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
 
 module.exports.posts = async (req, res) => {
     try {
@@ -54,7 +57,7 @@ module.exports.addbidder = async (req, res) => {
 module.exports.getposts = async (req, res) => {
     try {
         const data = await Activity.find()
-            .select('_id title category price currency location Provider')
+            .select('_id title category price currency location Provider ')
             .populate({ path: 'Provider', select: 'fullname' })
             .sort({ "createdAt": -1 })
         res.status(200).json(data);
@@ -85,9 +88,9 @@ module.exports.getpostById = async (req, res) => {
 module.exports.getpostbyproviderId = async (req, res) => {
     try {
         const data = await Activity.find({ Provider: req.params.id })
-            .select(' title category price currency Provider location')
+            .select(' title category price currency Provider location Paystatus')
             .populate("Provider bidders")
-            .sort({ "createdAt": 1 })
+            .sort({ "createdAt": -1 })
         res.status(200).json(data);
 
     } catch (error) {
@@ -98,7 +101,7 @@ module.exports.getpostbyproviderId = async (req, res) => {
 }
 module.exports.postbyselectedID = async (req, res) => {
     try {
-        const data = await Activity.find({ Selected: req.params.id })
+        const data = await Activity.find({ Selected: req.params.id, Paystatus: "unpaid" })
             .select(' title category')
             .sort({ "createdAt": 1 })
         res.status(200).json(data);
@@ -232,7 +235,7 @@ module.exports.confirm = async (req, res) => {
         const data = await Activity.findByIdAndUpdate({ _id: req.params.id },
             {
                 $set: {
-                    confirm:null
+                    confirm: null
                 }
             }, { new: true });
 
@@ -293,6 +296,103 @@ module.exports.DeletePost = async (req, res) => {
 
     } catch (error) {
         return res.status(400).json({ error });
+
+    }
+}
+module.exports.order = async (req, res) => {
+    try {
+        const instance = new Razorpay({
+            key_id: process.env.KEY_ID,
+            key_secret: process.env.KEY_SECRET,
+        });
+
+        const options = {
+            amount: req.body.amount,
+            currency: "INR",
+            receipt: crypto.randomBytes(10).toString("hex"),
+        };
+
+
+        instance.orders.create(options, async (error, order) => {
+            if (error) {
+                console.log(error);
+                return res.status(500).json({ message: "Something Went Wrong!" });
+            }
+            if (order) {
+                const data = new Order({
+                    data: order,
+                    postID: req.body.postID
+                })
+                const result = await data.save()
+                res.status(200).json({ result });
+            }
+
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error!" });
+        console.log(error);
+    }
+}
+module.exports.verify = async (req, res) => {
+    try {
+        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+            req.body;
+        const sign = razorpay_order_id + "|" + razorpay_payment_id;
+        const expectedSign = crypto
+            .createHmac("sha256", process.env.KEY_SECRET)
+            .update(sign.toString())
+            .digest("hex");
+
+        if (razorpay_signature === expectedSign) {
+            return res.status(200).json({ message: "Payment verified successfully" });
+        } else {
+            return res.status(400).json({ message: "Invalid signature sent!" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error!" });
+        console.log(error);
+    }
+}
+module.exports.payout = async (req, res) => {
+    try {
+        const instance = new Razorpay({
+            key_id: process.env.KEY_ID,
+            key_secret: process.env.KEY_SECRET,
+        });
+        const recipientPhoneNumber = 9820103958
+        const options = {
+            amount: req.body.amount,
+            currency: "INR",
+            receipt: crypto.randomBytes(10).toString("hex"),
+        };
+
+        instance.orders.create(options, (error, order) => {
+            if (error) {
+                console.log(error);
+                return res.status(500).json({ message: "Something Went Wrong!" });
+            }
+            const paymentLink = `https://rzp.io/i/${order.id}/${recipientPhoneNumber}`;
+            res.status(200).json({
+                order, paymentLink
+            });
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error!" });
+        console.log(error);
+    }
+}
+module.exports.getpaymentbypostID = async (req, res) => {
+    try {
+        const data = await Order.find({ postID: req.params.id })
+        if (data) {
+            res.status(200).json({ data, message: "payment history received." });
+        }
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error);
 
     }
 }

@@ -60,9 +60,13 @@ router.patch("/auth/updateWS/:id",[auth.verifyToken], ctrlActivity.updateWS);
 router.patch("/auth/Reviewwork/:id",[auth.verifyToken], ctrlActivity.review);
 router.patch("/auth/resubmit/:id", ctrlActivity.resubmit);
 router.patch("/auth/confirm/:id", ctrlActivity.confirm);
-router.patch("/auth/updatePay/:id",[auth.verifyToken], ctrlActivity.updatepaystatus);
+router.patch("/auth/updatePay/:id", ctrlActivity.updatepaystatus);
 router.patch("/auth/Removebidder/:id",[auth.verifyToken], ctrlActivity.removebidder);
 router.delete("/auth/deletePostBy/:id",[auth.verifyToken], ctrlActivity.DeletePost);
+router.post('/auth/orders',[auth.verifyToken], ctrlActivity.order)
+router.post('/auth/payout',[auth.verifyToken], ctrlActivity.payout)
+router.post('/auth/verify',[auth.verifyToken], ctrlActivity.verify)
+router.get("/auth/getpaymentbypost/:id",[auth.verifyToken], ctrlActivity.getpaymentbypostID);
 
 //api Blog
 router.post("/auth/Createblog", [auth.verifyToken], ctrlBlogs.Createblog);
@@ -81,5 +85,8 @@ router.put('/auth/:roomId/mark-read',[auth.verifyToken], chatRoom.markConversati
 router.get('/auth/:roomId',[auth.verifyToken], chatRoom.getConversationByRoomId)
 router.delete("/auth/deleteBy/:roomId",[auth.verifyToken], chatRoom.deleteRoomById);
 router.delete("/auth/deleteMessagesBy/:messageId",[auth.verifyToken], chatRoom.deleteMessageById);
+
+//api Payement 
+
 
 module.exports = router;

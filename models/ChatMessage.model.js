@@ -108,7 +108,7 @@ chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, mes
         // return aggregate;
         return post
     } catch (error) {
-        throw error;
+        console.log(error)
     }
 }
 

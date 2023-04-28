@@ -31,7 +31,6 @@ module.exports.postMessage = async (req, res) => {
         };
         const currentLoggedUser = req.userId;
         const post = await chatMessage.createPostInChatRoom(roomId, messagePayload, currentLoggedUser);
-        global.io.sockets.in(roomId).emit('new message', { message: post });
 
         if (post) {
             res.status(200).json(post);
