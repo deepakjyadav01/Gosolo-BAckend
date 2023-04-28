@@ -68,7 +68,20 @@ module.exports.getposts = async (req, res) => {
 
     }
 }
+module.exports.getpostsbycategory = async (req, res) => {
+    try {
+        const data = await Activity.find({ category: { $regex: req.params.category, $options: 'xsi' } })
+            .select('_id title category price currency location Provider ')
+            .populate({ path: 'Provider', select: 'fullname' })
+            .sort({ "createdAt": -1 })
+        res.status(200).json(data);
+        
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error);
 
+    }
+}
 module.exports.getpostById = async (req, res) => {
     try {
         const data = await Activity.findById({ _id: req.params.id })
@@ -362,7 +375,7 @@ module.exports.payout = async (req, res) => {
         });
         const recipientPhoneNumber = 9820103958
         const options = {
-            amount: req.body.amount,
+            amount: req.body.amount * 100,
             currency: "INR",
             receipt: crypto.randomBytes(10).toString("hex"),
         };
@@ -385,8 +398,10 @@ module.exports.payout = async (req, res) => {
 module.exports.getpaymentbypostID = async (req, res) => {
     try {
         const data = await Order.find({ postID: req.params.id })
-        if (data) {
+        if (data.length === 1) {
             res.status(200).json({ data, message: "payment history received." });
+        }else{
+            res.status(200).json({ message: "No" });
         }
 
 

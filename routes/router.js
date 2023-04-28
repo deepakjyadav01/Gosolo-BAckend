@@ -49,6 +49,7 @@ router.put("/auth/updateProfile/:id",[auth.verifyToken], ctrlProfile.updateProfi
 //api Activity
 router.post("/auth/AddPost",[auth.verifyToken], ctrlActivity.posts);
 router.get("/auth/getposts",[auth.verifyToken], ctrlActivity.getposts);
+router.get("/auth/getposts/:category",[auth.verifyToken], ctrlActivity.getpostsbycategory);
 router.get("/auth/getpostBy/:id",[auth.verifyToken], ctrlActivity.getpostById);
 router.get("/auth/postbyproviderID/:id",[auth.verifyToken], ctrlActivity.getpostbyproviderId);
 router.get("/auth/postbyselectedID/:id",[auth.verifyToken], ctrlActivity.postbyselectedID);
